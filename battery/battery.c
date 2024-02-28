@@ -85,7 +85,7 @@ int main() {
     fclose(f); // the file is not needed anymore
 
     // compute a few numbers for display given we now have battery data available
-    if (battery.max_charge == 0 || battery.current_now == 0) {
+    if (battery.max_charge == 0 || battery.max_charge == UINT32_MAX || battery.current_now == 0 || battery.current_now == UINT32_MAX) {
         fprintf(stderr, "Could not retrieve sufficient battery information");
         return 2;
     }
@@ -97,12 +97,16 @@ int main() {
     }
 
     // print out result, cleanup & exit
-    printf("BAT: %.2f%% %02d:%02d", cur_battery_level, hours, minutes);
+    printf("BAT: %.2f%% %02d:%02d\n", cur_battery_level, hours, minutes); // changes full_text
+    printf("BAT: %.2f%% %02d:%02d\n", cur_battery_level, hours, minutes); // changes short_text
     free_battery(&battery);
 
-    if (cur_battery_level > 20) {
-        return 0;
+    if (cur_battery_level < 15) {
+        return 33;
     } else {
-        return 1;
+        if (cur_battery_level < 30) {
+            printf("#FF8000\n");
+        }
+        return 0;
     }
 }
