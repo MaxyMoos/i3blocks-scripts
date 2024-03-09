@@ -33,6 +33,14 @@ void free_battery(Battery *battery) {
     if (battery->status != NULL) free(battery->status);
 }
 
+void print_battery_status_short(Battery *battery)
+{
+    if (strcmp(battery->status, "Charging") == 0)
+        printf("⚡CHR ");
+    else
+        printf("🔋 BAT ");
+}
+
 int main() {
     FILE *f = fopen(PATH, "r");
     if (f == NULL) {
@@ -97,8 +105,10 @@ int main() {
     }
 
     // print out result, cleanup & exit
-    printf("BAT: %.2f%% %02d:%02d\n", cur_battery_level, hours, minutes); // changes full_text
-    printf("BAT: %.2f%% %02d:%02d\n", cur_battery_level, hours, minutes); // changes short_text
+    print_battery_status_short(&battery);
+    printf("%.2f%% %02d:%02d\n", cur_battery_level, hours, minutes); // changes full_text
+    print_battery_status_short(&battery);
+    printf("%.2f%% %02d:%02d\n", cur_battery_level, hours, minutes); // changes short_text
     free_battery(&battery);
 
     if (cur_battery_level < 15) {
